@@ -5,28 +5,22 @@ export default function Home({ session }) {
   return (
     <>
       <main>
-        {session ? (
-          <>
-            <h1>Index rendered from server</h1>
-            <p>{session.user.name}</p>
-            <p>{session.user.email}</p>
-            <Image
-              src={session.user.image}
-              width={20}
-              height={20}
-              alt="user logo"
-            />
-            <button
-              onClick={() => {
-                signOut();
-              }}
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <p>Squeleton</p>
-        )}
+        <h1>Index rendered from server</h1>
+        <p>{session.user.name}</p>
+        <p>{session.user.email}</p>
+        <Image
+          src={session.user.image}
+          width={20}
+          height={20}
+          alt="user logo"
+        />
+        <button
+          onClick={() => {
+            signOut();
+          }}
+        >
+          Logout
+        </button>
       </main>
       <style jsx>{`
         main {
