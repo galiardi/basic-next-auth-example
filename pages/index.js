@@ -1,36 +1,57 @@
+import { getSession, signOut } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
-function Home() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  if (status === "loading") {
-    return <p>loading...</p>;
-  }
-  if (status === "unauthenticated") {
-    router.push("/login");
-  }
-
+export default function Home({ session }) {
   return (
     <>
-      {session ? (
-        <>
-          <p>{session.user.name}</p>
-          <p>{session.user.email}</p>
-          <Image
-            src={session.user.image}
-            width={20}
-            height={20}
-            alt="user logo"
-          />
-        </>
-      ) : (
-        <p>Squeleton</p>
-      )}
+      <main>
+        {session ? (
+          <>
+            <h1>Index rendered from server</h1>
+            <p>{session.user.name}</p>
+            <p>{session.user.email}</p>
+            <Image
+              src={session.user.image}
+              width={20}
+              height={20}
+              alt="user logo"
+            />
+            <button
+              onClick={() => {
+                signOut();
+              }}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <p>Squeleton</p>
+        )}
+      </main>
+      <style jsx>{`
+        main {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+      `}</style>
     </>
   );
 }
 
-export default Home;
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session)
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  return {
+    props: {
+      session,
+    },
+  };
+};
